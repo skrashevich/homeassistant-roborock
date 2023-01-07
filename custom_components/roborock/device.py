@@ -62,7 +62,14 @@ class RoborockCoordinatedEntity(CoordinatorEntity[RoborockDataUpdateCoordinator]
         )
 
     def translate(self, translation_key: str, attr: str, value):
-        return self.coordinator.translation.get(translation_key).get(attr).get(str(value))
+        try:
+            return (
+                self.coordinator.translation.get(translation_key)
+                .get(attr)
+                .get(str(value))
+            )
+        except:
+            return str(value)
 
     async def send(self, command: str, params=None, no_response=False):
         """Send a command to a vacuum cleaner."""
