@@ -1,4 +1,6 @@
 """The Roborock component."""
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
@@ -10,8 +12,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from custom_components.roborock.api.api import RoborockClient, RoborockMqttClient
-from .api.containers import Status, UserData, HomeData, CleanSummary
+from .api.api import RoborockClient, RoborockMqttClient
+from .api.containers import UserData, HomeData
+from .api.exceptions import RoborockException
 from .api.typing import RoborockDeviceInfo, RoborockDeviceProp
 from .const import CONF_ENTRY_USERNAME, CONF_USER_DATA, CONF_BASE_URL
 from .const import DOMAIN, PLATFORMS
@@ -21,15 +24,15 @@ SCAN_INTERVAL = timedelta(seconds=30)
 _LOGGER = logging.getLogger(__name__)
 
 
-def get_translation_file(hass: HomeAssistant, file_url: str):
-    file_path = Path(hass.config.path(file_url))
+def get_translation_file(file_url):
+    file_path = Path(file_url) if isinstance(file_url, str) else file_url
     if file_path.is_file():
         f = open(file_path)
         translation = json.load(f)
         entity = translation.get("entity")
         if not entity:
             return
-        domain = entity.get("_")
+        domain = entity.get("sensor")
         if not domain:
             return
         data = {}
@@ -39,21 +42,24 @@ def get_translation_file(hass: HomeAssistant, file_url: str):
 
 
 def get_translation(hass: HomeAssistant):
+    path = Path
+    if hasattr(hass.config, 'path'):
+        path = hass.config.path
     if hasattr(hass.config, 'language'):
         language = hass.config.language
-        translation = get_translation_file(hass,
-            f"custom_components/roborock/translations/{language}.json"
+        translation = get_translation_file(
+            path(f"custom_components/roborock/translations/{language}.json")
         )
         if translation:
             return translation
         wide_language = language.split("-")[0]
-        wide_translation = get_translation_file(hass,
-            f"custom_components/roborock/translations/{wide_language}.json"
+        wide_translation = get_translation_file(
+            path(f"custom_components/roborock/translations/{wide_language}.json")
         )
         if wide_translation:
             return wide_translation
-    return get_translation_file(hass,
-        "custom_components/roborock/translations/en.json"
+    return get_translation_file(
+        path("custom_components/roborock/translations/en.json")
     )
 
 
@@ -67,7 +73,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     username = entry.data.get(CONF_ENTRY_USERNAME)
     api_client = RoborockClient(username, base_url)
     _LOGGER.debug("Getting home data")
-    home_data = HomeData(await api_client.get_home_data(user_data))
+    home_data = await api_client.get_home_data(user_data)
     _LOGGER.debug(f"Got home data {home_data.data}")
 
     device_map: dict[str, RoborockDeviceInfo] = {}
@@ -83,11 +89,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         device_map[device.duid] = RoborockDeviceInfo(device, product)
 
     translation = get_translation(hass)
+    _LOGGER.debug(f"Using translation {translation}")
 
     client = RoborockMqttClient(user_data, device_map)
     coordinator = RoborockDataUpdateCoordinator(hass, client, translation)
 
-    _LOGGER.debug("Searching for Roborock sensors...")
     await coordinator.async_refresh()
 
     if not coordinator.last_update_success:
@@ -129,19 +135,16 @@ class RoborockDataUpdateCoordinator(
         try:
             for device_id, _ in self.api.device_map.items():
                 device_prop = None
-                retries = 3
-                while not device_prop and retries > 0:
-                    device_prop = await self.api.get_prop(device_id)
-                    retries -= 1
+                device_prop = await self.api.get_prop(device_id)
                 if device_prop:
                     if device_id in self._devices_prop:
                         self._devices_prop[device_id].update(device_prop)
                     else:
                         self._devices_prop[device_id] = device_prop
             return self._devices_prop
-        except Exception as exception:
-            _LOGGER.exception(exception)
-            raise UpdateFailed(exception) from exception
+        except (TimeoutError, RoborockException) as ex:
+            _LOGGER.exception(ex)
+            raise UpdateFailed(ex) from ex
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
