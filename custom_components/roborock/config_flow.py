@@ -140,7 +140,7 @@ class RoborockFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         except Exception as ex:
             _LOGGER.exception(ex)
             self._errors["base"] = "auth"
-            return None
+            return
 
 
 PERCENT_SCHEMA = vol.All(vol.Coerce(float), vol.Range(min=0, max=100))
@@ -166,8 +166,8 @@ def get_nested_dict(data: dict, key_string: str, default=None):
 
 CAMERA_OPTIONS = {
     f"{CONF_MAP_TRANSFORM}.{CONF_SCALE}": {
-        "store_type": int,
-        "show_type": int,
+        "store_type": float,
+        "show_type": float,
         "default": 1,
         "schema": POSITIVE_FLOAT_SCHEMA
     },
