@@ -2,6 +2,13 @@
   "config": {
     "step": {
       "user": {
+        "description": "Vælg en godkendelsesmetode",
+        "menu_options": {
+          "code": "Login men godkendelseskode fra email",
+          "password": "Login med password"
+        }
+      },
+      "email": {
         "description": "Login info til Roborock app",
         "data": {
           "username": "Brugernavn"
@@ -12,16 +19,34 @@
         "data": {
           "code": "Verifikationskode"
         }
+      },
+      "password": {
+        "description": "Indtast password",
+        "data": {
+          "password": "Password"
+        }
       }
     },
     "error": {
       "no_device": "Der blev ikke fundet nogen enhed på din Roborock konto",
       "auth": "Login fejl. Kontroller login informationer"
+    },
+    "abort": {
+      "already_configured": "Enhed er allerede konfigureret",
+      "already_in_progress": "Konfiguration af enhed er allerede igangsat"
     }
   },
   "options": {
     "step": {
       "user": {
+        "description": "Vælg platform der skal konfigures",
+        "menu_options": {
+          "vacuum": "Støvsuger",
+          "camera": "Kamera"
+        }
+      },
+      "camera": {
+        "description": "Kamera Indstillinger",
         "data": {
           "map_transformation.scale": "Kort skala",
           "map_transformation.rotate": "Kort rotation",
@@ -29,6 +54,12 @@
           "map_transformation.trim.right": "Kort højre trim",
           "map_transformation.trim.top": "Kort top trim",
           "map_transformation.trim.bottom": "Kort bund trim"
+        }
+      },
+      "vacuum": {
+        "description": "Støvsuger Indstillinger",
+        "data": {
+          "include_shared": "Inkluder delte enheder"
         }
       }
     }
@@ -57,10 +88,11 @@
           "21": "Lodret kofanger påvirket. Flyt robotten og genstart.",
           "22": "Dock lokations fejl. Rens dock og genstart.",
           "23": "Kunne ikke returnere til dock. Rens dock lokations beacon og genstart.",
+          "24": "No-go zone eller usynligvæg detekteret. Flyt robotten væk fra dette område.",
           "27": "VibraRise system fastklemte. Kontroller for forhindringer.",
           "28": "Robot på tæppe. Flyt robot til gulv og genstart.",
           "29": "Filter blokeret eller vådt. Rens, tør og restart.",
-          "30": "No-go zone eller Usynligvæg detekteret. Flyt robotten væk fra dette område.",
+          "30": "No-go zone eller usynligvæg detekteret. Flyt robotten væk fra dette område.",
           "31": "Kan ikke køre på tæppe. Flyt robot over tæppet og genstart.",
           "32": "Intern Fejl. Reset robotten."
         }

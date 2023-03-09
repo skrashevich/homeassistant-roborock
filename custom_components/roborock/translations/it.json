@@ -2,6 +2,13 @@
   "config": {
     "step": {
       "user": {
+        "description": "Seleziona un metodo di autenticazione",
+        "menu_options": {
+          "code": "Accedi con il codice di autenticazione e-mail",
+          "password": "Accedi con password"
+        }
+      },
+      "email": {
         "description": "Usare le credenziali dell'app",
         "data": {
           "username": "Email"
@@ -12,16 +19,34 @@
         "data": {
           "code": "Codice di verifica"
         }
+      },
+      "password": {
+        "description": "Digita la tua password",
+        "data": {
+          "password": "Password"
+        }
       }
     },
     "error": {
       "no_device": "Nessun dispositivo trovato nel tuo account Roborock",
       "auth": "Accesso fallito. Controlla le credenziali"
+    },
+    "abort": {
+      "already_configured": "L'account è già configurato",
+      "already_in_progress": "L'account è in fase di configurazione"
     }
   },
   "options": {
     "step": {
       "user": {
+        "description": "Seleziona una piattaforma da configurare",
+        "menu_options": {
+          "vacuum": "Aspirapolvere",
+          "camera": "Camera"
+        }
+      },
+      "camera": {
+        "description": "Opzioni camera",
         "data": {
           "map_transformation.scale": "Scala della mappa",
           "map_transformation.rotate": "Rotazione della mappa",
@@ -29,6 +54,12 @@
           "map_transformation.trim.right": "Ritaglio mappa da destra",
           "map_transformation.trim.top": "Ritaglio mappa dall'alto",
           "map_transformation.trim.bottom": "Ritaglio mappa dal basso"
+        }
+      },
+      "vacuum": {
+        "description": "Opzioni aspirapolvere",
+        "data": {
+          "include_shared": "Includi i dispositivi condivisi"
         }
       }
     }

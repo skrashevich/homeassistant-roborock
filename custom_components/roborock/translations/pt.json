@@ -2,6 +2,13 @@
   "config": {
     "step": {
       "user": {
+        "description": "Selecione um método de autenticação",
+        "menu_options": {
+          "code": "Login com codigo de autenticação por email",
+          "password": "Login com senha"
+        }
+      },
+      "email": {
         "description": "Suas credenciais do app",
         "data": {
           "username": "Email"
@@ -12,16 +19,34 @@
         "data": {
           "code": "Codigo de verificação"
         }
+      },
+      "password": {
+        "description": "Digite sua senha",
+        "data": {
+          "password": "Senha"
+        }
       }
     },
     "error": {
       "no_device": "Nenhum dispositivo encontrado na sua conta Roborock",
       "auth": "Falha no login. Verifique suas credenciais"
+    },
+    "abort": {
+      "already_configured": "Conta já configurada",
+      "already_in_progress": "Conta já esta sendo configurada"
     }
   },
   "options": {
     "step": {
       "user": {
+        "description": "Selecione uma plataforma para configurar",
+        "menu_options": {
+          "vacuum": "Vacuum",
+          "camera": "Camera"
+        }
+      },
+      "camera": {
+        "description": "Opções de camera",
         "data": {
           "map_transformation.scale": "Escala do mapa",
           "map_transformation.rotate": "Rotação do mapa",
@@ -29,6 +54,12 @@
           "map_transformation.trim.right": "Guarnição direita do mapa",
           "map_transformation.trim.top": "Guarnição superior do mapa",
           "map_transformation.trim.bottom": "Guarnição inferior do mapa"
+        }
+      },
+      "vacuum": {
+        "description": "Opções do aspirador",
+        "data": {
+          "include_shared": "Incluir dispositivos compartilhados"
         }
       }
     }

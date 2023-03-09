@@ -2,9 +2,16 @@
   "config": {
     "step": {
       "user": {
+        "description": "Выберите метод аутентификации",
+        "menu_options": {
+          "code": "Войти с помощаю кода на почту",
+          "password": "Войти с помощью пароля"
+        }
+      },
+      "email": {
         "description": "Ваши данные из приложения",
         "data": {
-          "username": "Email"
+          "username": "Почта"
         }
       },
       "code": {
@@ -12,16 +19,34 @@
         "data": {
           "code": "Код подтверждения"
         }
+      },
+      "password": {
+        "description": "Введите свой пароль",
+        "data": {
+          "password": "Пароль"
+        }
       }
     },
     "error": {
       "no_device": "В вашей учетной записи Roborock не найдено ни одного устройства",
       "auth": "Не удалось войти. Проверьте данные."
+    },
+    "abort": {
+      "already_configured": "Аккаунт уже настроен",
+      "already_in_progress": "Аккаунт уже настраивается"
     }
   },
   "options": {
     "step": {
       "user": {
+        "description": "Выберите платформу для настройки",
+        "menu_options": {
+          "vacuum": "Пылесос",
+          "camera": "Камера"
+        }
+      },
+      "camera": {
+        "description": "Параметры камеры",
         "data": {
           "map_transformation.scale": "Масштаб карты",
           "map_transformation.rotate": "Вращение карты",
@@ -29,6 +54,12 @@
           "map_transformation.trim.right": "Выравнивание карты справа",
           "map_transformation.trim.top": "Выравнивание карты сверху",
           "map_transformation.trim.bottom": "Выравнивание карты снизу"
+        }
+      },
+      "vacuum": {
+        "description": "Параметры пылесоса",
+        "data": {
+          "include_shared": "Добавить общие устройства"
         }
       }
     }

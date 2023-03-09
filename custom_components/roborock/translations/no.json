@@ -2,6 +2,13 @@
   "config": {
     "step": {
       "user": {
+        "description": "Select an authentication method",
+        "menu_options": {
+          "code": "Login with email authentication code",
+          "password": "Login with password"
+        }
+      },
+      "email": {
         "description": "Innlogging fra app",
         "data": {
           "username": "Brukernavn"
@@ -12,16 +19,34 @@
         "data": {
           "code": "Verification code"
         }
+      },
+      "password": {
+        "description": "Type your password",
+        "data": {
+          "password": "Password"
+        }
       }
     },
     "error": {
       "no_device": "Ingen enhet funnet i din Roborock konto",
       "auth": "Innlogging feilet, sjekk brukernavn og passord"
+    },
+    "abort": {
+      "already_configured": "Account is already configured",
+      "already_in_progress": "Account is already being configured"
     }
   },
   "options": {
     "step": {
       "user": {
+        "description": "Select a platform to configure",
+        "menu_options": {
+          "vacuum": "Vacuum",
+          "camera": "Camera"
+        }
+      },
+      "camera": {
+        "description": "Camera Options",
         "data": {
           "map_transformation.scale": "Map scale",
           "map_transformation.rotate": "Map rotation",
@@ -29,6 +54,12 @@
           "map_transformation.trim.right": "Map right trim",
           "map_transformation.trim.top": "Map top trim",
           "map_transformation.trim.bottom": "Map bottom trim"
+        }
+      },
+      "vacuum": {
+        "description": "Vacuum options",
+        "data": {
+          "include_shared": "Include shared devices"
         }
       }
     }

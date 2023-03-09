@@ -14,9 +14,9 @@ from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import slugify
 
-from . import RoborockDataUpdateCoordinator
-from .api.exceptions import RoborockTimeout
-from .api.typing import RoborockDeviceInfo, RoborockCommand
+from . import RoborockDataUpdateCoordinator, set_nested_dict
+from roborock.exceptions import RoborockTimeout, RoborockBackoffException
+from roborock.typing import RoborockDeviceInfo, RoborockCommand
 from .common.image_handler import ImageHandlerRoborock
 from .common.map_data import MapData
 from .common.map_data_parser import MapDataParserRoborock
@@ -27,7 +27,7 @@ from .common.types import (
     Sizes,
     Texts,
 )
-from .config_flow import CAMERA_OPTIONS, set_nested_dict
+from .config_flow import CAMERA_VALUES
 from .const import *
 from .device import RoborockCoordinatedEntity
 
@@ -74,11 +74,13 @@ async def async_setup_entry(
     add_services()
 
     coordinator: RoborockDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
-    image_config = config_entry.options.get(CONF_MAP_TRANSFORM)
+    camera_options = config_entry.options.get(CAMERA)
+    image_config = None
+    if camera_options:
+        image_config = camera_options.get(CONF_MAP_TRANSFORM)
     if not image_config:
         data = {}
-        for key, value in CAMERA_OPTIONS.items():
-            value = value.get("default")
+        for key, value in CAMERA_VALUES.items():
             set_nested_dict(data, key, value)
         image_config = data.get(CONF_MAP_TRANSFORM)
     entities = []
@@ -230,12 +232,12 @@ class VacuumCameraMap(RoborockCoordinatedEntity, Camera):
     async def async_map(self):
         """Return map token."""
         try:
-            map_v1 = await self.send(RoborockCommand.GET_MAP_V1)
+            map_v1 = await self.coordinator.api.get_map_v1(self._device_id)
             if not map_v1:
                 self.set_invalid_map()
             self.set_valid_map()
             return map_v1
-        except RoborockTimeout:
+        except (RoborockTimeout, RoborockBackoffException):
             self.set_invalid_map()
 
     def maps(self):
